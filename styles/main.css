@@ -1,0 +1,58 @@
+:root {
+    --main-color: #fffc3c;
+    --secondary-color: #1e0c18;
+    --nav-hover: #471d39;
+}
+
+@font-face {
+    font-family: main;
+    src: url(../fonts/SpecialGothicCondensedOne-Regular.ttf);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--main-color);
+    font-family: main;
+}
+
+h1 {
+    text-align: center;
+    font-size: 38px;
+}
+
+header {
+    height: 300px;
+    width: 300px;
+    margin: auto;
+    background-color: var(--secondary-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+}
+
+nav {
+    max-width: 750px;
+    margin: auto;
+    display: flex;
+    font-size: 24px;
+    background-color: var(--secondary-color);
+    padding: 10px;
+    border-radius: 10px;
+}
+
+nav a {
+    flex-grow: 1;
+    flex-basis: 0;
+    text-align: center;
+    text-decoration: none;
+    color: var(--main-color);
+    border-radius: 10px;
+}
+
+nav a:hover {
+    background-color: var(--nav-hover);
+}
