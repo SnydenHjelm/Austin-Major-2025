@@ -18,6 +18,10 @@ body {
     font-family: main;
 }
 
+#current {
+    background-color: var(--nav-hover);
+}
+
 h1 {
     text-align: center;
     font-size: 38px;
@@ -38,6 +42,7 @@ nav {
     max-width: 750px;
     margin: auto;
     display: flex;
+    gap: 5px;
     font-size: 24px;
     background-color: var(--secondary-color);
     padding: 10px;

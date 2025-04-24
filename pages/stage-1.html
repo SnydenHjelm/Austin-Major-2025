@@ -14,7 +14,7 @@
     </header>
     <h1>Stage 1</h1>
     <nav>
-        <a href="stage-1.html">Stage 1</a>
+        <a id="current" href="stage-1.html">Stage 1</a>
         <a href="stage-2.html">Stage 2</a>
         <a href="stage-3.html">Stage 3</a>
         <a href="#">Playoffs</a>
@@ -22,7 +22,7 @@
     <h2>Qualified teams:</h2>
     <div class="qualied-teams" id="stage1-qualied-teams">
     </div>
-    <div class="controls" id="stage1-controls">
+    <div style="display: none;" class="controls" id="stage1-controls">
         <input id="team" type="text" placeholder="Team...">
         <input id="player1" type="text" placeholder="Player 1, Country...">
         <input id="player2" type="text" placeholder="Player 2, Country...">
@@ -31,6 +31,43 @@
         <input id="player5" type="text" placeholder="Player 5, Country...">
         <button>Submit</button>
         <p id="status">...</p>
+    </div>
+    <div class="matches" id="stage1-matches">
+        <h2>0-0 Games (Bo1)</h2>
+        <div class="games" id="stage1-0-0">
+        </div>
+        <h2>0-1 games (Bo1)</h2>
+        <div class="games" id="stage1-0-1">
+        </div>
+        <h2>1-0 games (Bo1)</h2>
+        <div class="games" id="stage1-1-0">
+        </div>
+        <h2>1-1 games (Bo1)</h2>
+        <div class="games six-games" id="stage1-1-1">
+        </div>
+        <h2>2-0 games (Bo3)</h2>
+        <div class="games two-games" id="stage1-2-0">
+        </div>
+        <h2>0-2 games (Bo3)</h2>
+        <div class="games two-games" id="stage1-0-2">
+        </div>
+        <h2>2-1 games (Bo3)</h2>
+        <div class="games three-games" id="stage1-2-1">
+        </div>
+        <h2>1-2 games (Bo3)</h2>
+        <div class="games three-games" id="stage1-1-2">
+        </div>
+        <h2>2-2 games (Bo5)</h2>
+        <div class="games three-games" id="stage1-2-2">
+        </div>
+    </div>
+    <div class="controls">
+        <input id="team-record" type="text" placeholder="Team record (before match)...">
+        <input id="team1" type="text" placeholder="Team 1...">
+        <input id="team2" type="text" placeholder="Team 2...">
+        <input id="score" type="text" placeholder="Score...">
+        <button id="matches-b">Submit</button>
+        <p id="matches-status"></p>
     </div>
     <script src="../scripts/stage-1.js"></script>
 </body>

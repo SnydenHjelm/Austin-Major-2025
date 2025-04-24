@@ -90,6 +90,30 @@ async function handler(req) {
             Deno.writeTextFileSync("../db/stage-3.json", JSON.stringify(teams));
             return new Response("Team successfully added", {status: 200, headers: headersOBJ});
         }
+    } else if (url.pathname === "/stage1/games") {
+        if (req.method === "POST") {
+            if (req.headers.get("content-type") !== "application/json") {return new Response("Invalid Content-Type, JSON Expected", {status: 405, headers: headersOBJ})};
+            headersOBJ.set("content-type", "application/json");
+            let reqBody = await req.json();
+            if (!reqBody.record || !reqBody.team1 || !reqBody.team2 || !reqBody.score) {
+                return new Response("Invalid requests, Attributes missing", {status: 400, headers: headersOBJ});
+            }
+
+            let obj =  {
+                record: reqBody.record,
+                team1: reqBody.team1,
+                team2: reqBody.team2,
+                score: reqBody.score
+            }
+
+            let db = JSON.parse(Deno.readTextFileSync("../db/stage-1-games.json"));
+            db.push(obj);
+            Deno.writeTextFileSync("../db/stage-1-games.json", JSON.stringify(db));
+            return new Response(JSON.stringify(db), {headers: headersOBJ});
+        } else if (req.method === "GET") {
+            let db = JSON.parse(Deno.readTextFileSync("../db/stage-1-games.json"));
+            return new Response(JSON.stringify(db), {headers: headersOBJ});
+        }
     }
 
     return new Response("Invalid Request", {status: 400, headers: headersOBJ});

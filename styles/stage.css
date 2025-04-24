@@ -1,3 +1,11 @@
+a {
+    display: flex;
+    justify-content: center;
+    color: black;
+    text-decoration: none;
+    font-size: 22px;
+}
+
 h2 {
     text-align: center;
     font-size: 28px;
@@ -10,6 +18,38 @@ h2 {
     margin: auto;
     gap: 5px;
     margin-top: 5px;
+}
+
+.game {
+    /* flex-grow: 1;
+    flex-basis: 0; */
+    display: grid;
+    grid-template-columns: 1fr 100px 1fr;
+    align-items: center;
+    border: 2px solid var(--main-color);
+}
+
+.game h2 {
+    color: var(--main-color);
+}
+
+.game img {
+    height: 50px;
+    width: 50px;
+    object-fit: contain;
+    background-color: var(--main-color);
+    border-radius: 10px;
+    padding: 5px;
+    justify-self: center;
+}
+
+.games {
+    max-width: 1200px;
+    margin: auto;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    background-color: var(--secondary-color);
+    border-radius: 10px;
 }
 
 #status {
@@ -41,6 +81,22 @@ h2 {
 
 .team ul li {
     font-size: 18px;
+}
+
+.three-games {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.two-games {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.six-games {
+    grid-template-columns: repeat(6, 1fr);
+}
+
+.six-games .game {
+    grid-template-columns: 1fr 50px 1fr;
 }
 
 .qualied-teams {
