@@ -1,28 +1,32 @@
 async function addGame() {
-    let record = document.querySelector("#team-record").value;
-    let team1 = document.querySelector("#team1").value;
-    let team2 = document.querySelector("#team2").value;
-    let score = document.querySelector("#score").value;
+    let record = document.querySelector("#team-record");
+    let map = document.querySelector("#map");
+    let team1 = document.querySelector("#team1");
+    let team2 = document.querySelector("#team2");
+    let score = document.querySelector("#score");
 
     let obj = {
-        record: record,
-        team1: team1,
-        team2: team2,
-        score: score
+        record: record.value,
+        map: map.value,
+        team1: team1.value,
+        team2: team2.value,
+        score: score.value
     }
     let req = new Request("http://localhost:8000/stage1/games", optionsGen("POST", obj));
     let resp = await fetch(req);
-    if (resp.status === 200) {
+    if (resp.ok) {
         let reso = await resp.json();
+        console.log(reso);
         await displayGames(reso);
-        document.querySelector("#matches-status").textContent = "Game successfully added!";
-        document.querySelector("#team-record").value = "";
-        document.querySelector("#team1").value = "";
-        document.querySelector("#team2").value = "";
-        document.querySelector("#score").value = "";
+        record.value = "";
+        map.value = "";
+        team1.value = "";
+        team2.value = "";
+        score.value = "";
         return;
     } else {
-        document.querySelector("#matches-status").textContent = "One or more inputs empty";
+        let reso = await resp.text();
+        document.querySelector("#matches-status").textContent = `${resp.status}: ` + reso;
         return;
     }
 }
@@ -71,49 +75,6 @@ async function addStage1Team() {
     }
 }
 
-async function addStage2Team() {
-    let team = document.querySelector("#stage1-controls #team").value;
-    let player1 = document.querySelector("#stage1-controls #player1").value;
-    let player2 = document.querySelector("#stage1-controls #player2").value;
-    let player3 = document.querySelector("#stage1-controls #player3").value;
-    let player4 = document.querySelector("#stage1-controls #player4").value;
-    let player5 = document.querySelector("#stage1-controls #player5").value;
-    
-    let obj = {
-        team: team,
-        player1: player1.split(", "),
-        player2: player2.split(", "),
-        player3: player3.split(", "),
-        player4: player4.split(", "),
-        player5: player5.split(", ")
-    }
-
-    let req = new Request("http://localhost:8000/stage2", optionsGen("POST", obj));
-    try {
-        let resp = await fetch(req);
-        if (resp.status === 200) {
-            document.querySelector("#stage2-controls #status").textContent = `${team} added successfully`;
-            document.querySelector("#stage2-controls #team").value = "";
-            document.querySelector("#stage2-controls #player1").value = "";
-            document.querySelector("#stage2-controls #player2").value = "";
-            document.querySelector("#stage2-controls #player3").value = "";
-            document.querySelector("#stage2-controls #player4").value = "";
-            document.querySelector("#stage2-controls #player5").value = "";
-            await displayStage2();
-        } else {
-            let reso = await resp.text();
-            if (resp.status === 409) {
-                document.querySelector("#stage2-controls #status").textContent = reso
-            } else {
-                document.querySelector("#stage2-controls #status").textContent = reso;
-            }
-            return;
-        }
-    } catch (e) {
-        document.querySelector("#stage2-controls #status").textContent = "Network error";
-        return;
-    }
-}
 
 async function flagFromCountry(country) {
     let allFlags = flags();
@@ -121,33 +82,19 @@ async function flagFromCountry(country) {
     return theFlag.flag;
 }
 
-async function displayGames(data) {
-    if (!data) {
-        let req = new Request("http://localhost:8000/stage1/games");
-        let resp = await fetch(req);
-        let reso = await resp.json();
-        data = reso;
-    }
-    document.querySelector("#stage1-0-0").innerHTML = "";
-    document.querySelector("#stage1-1-0").innerHTML = "";
-    document.querySelector("#stage1-0-1").innerHTML = "";
-    document.querySelector("#stage1-1-1").innerHTML = "";
-    document.querySelector("#stage1-2-0").innerHTML = "";
-    document.querySelector("#stage1-0-2").innerHTML = "";
-    document.querySelector("#stage1-2-1").innerHTML = "";
-    document.querySelector("#stage1-1-2").innerHTML = "";
-    document.querySelector("#stage1-2-2").innerHTML = "";
-
-    for (let obj of data) {
-        let div = document.querySelector(`#stage1-${obj.record}`);
-        let gameDiv = document.createElement("div");
-        gameDiv.classList.add("game");
-        gameDiv.innerHTML = `
-        <img src="../images/${obj.team1}.png">
-        <h2>${obj.score}</h2>
-        <img src="../images/${obj.team2}.png">
-        `;
-        div.appendChild(gameDiv);
+async function displayGames(games) {
+    document.querySelector(".games").innerHTML = "";
+    for (let game of games) {
+        let div = document.createElement("div");
+        div.classList.add("game");
+        div.innerHTML = `
+        <p class="bigger">${game.record}</p>
+        <p>${game.map}</p>
+        <img title="${game.team1}" src="../images/${game.team1}.png">
+        <p class="bigger">${game.score}</p>
+        <img title="${game.team2}" src="../images/${game.team2}.png">
+        `
+        document.querySelector(".games").appendChild(div);
     }
 }
 
@@ -174,32 +121,9 @@ async function displayStage1() {
     }
 }
 
-async function displayStage2() {
-    let req = new Request("http://localhost:8000/stage2");
-    let resp = await fetch(req);
-    let div = document.querySelector("#stage2-qualied-teams");
-    div.innerHTML = "";
-    if (resp.ok) {
-        let reso = await resp.json();
-        for (let team of reso) {
-            let teamDiv = document.createElement("div");
-            teamDiv.classList.add("team");
-            teamDiv.innerHTML = `<img title="${team.team}" src="../images/${team.team}.png">
-            <ul>
-            <li>${await flagFromCountry(team.player1[1])} ${team.player1[0]}</li>
-            <li>${await flagFromCountry(team.player2[1])} ${team.player2[0]}</li>
-            <li>${await flagFromCountry(team.player3[1])} ${team.player3[0]}</li>
-            <li>${await flagFromCountry(team.player4[1])} ${team.player4[0]}</li>
-            <li>${await flagFromCountry(team.player5[1])} ${team.player5[0]}</li>
-            </ul>`;
-            div.appendChild(teamDiv);
-        }
-    }
-}
-
 async function driver() {
     await displayStage1();
-    await displayGames();
+    await displayGames(await getDb());
     document.querySelector("#stage1-controls button").addEventListener("click", addStage1Team);
     document.querySelector("#matches-b").addEventListener("click", addGame);
 }
@@ -343,6 +267,13 @@ function flags() {
         { country: "Zambia", flag: "🇿🇲" },
         { country: "Zimbabwe", flag: "🇿🇼" }
       ];      
+}
+
+async function getDb() {
+    let req = new Request("http://localhost:8000/stage1/games");
+    let resp = await fetch(req);
+    let reso = await resp.json();
+    return reso;
 }
 
 function optionsGen(method, body) {

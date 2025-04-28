@@ -95,12 +95,28 @@ async function handler(req) {
             if (req.headers.get("content-type") !== "application/json") {return new Response("Invalid Content-Type, JSON Expected", {status: 405, headers: headersOBJ})};
             headersOBJ.set("content-type", "application/json");
             let reqBody = await req.json();
-            if (!reqBody.record || !reqBody.team1 || !reqBody.team2 || !reqBody.score) {
-                return new Response("Invalid requests, Attributes missing", {status: 400, headers: headersOBJ});
+            if (!reqBody.record || !reqBody.map || !reqBody.team1 || !reqBody.team2 || !reqBody.score) {
+                return new Response("Invalid request, Attributes missing", {status: 400, headers: headersOBJ});
+            }
+
+            let maps = ["Ancient", "Anubis", "Train", "Inferno", "Dust 2", "Mirage", "Nuke"];
+            let records = ["0-0", "0-1", "1-0", "1-1", "1-2", "2-1", "2-2", "2-0", "0-2"];
+            if (!records.includes(reqBody.record)) {
+                return new Response("Invalid Record", {status: 406, headers: headersOBJ});
+            } else if (reqBody.map.length > 10) {
+                let reqMaps = reqBody.map.split(", ");
+                if (!maps.includes(reqMaps[0]) || !maps.includes(reqMaps[1]) || !maps.includes(reqMaps[2])) {
+                    return new Response("Invalid Map(s)", {status: 406, headers: headersOBJ});
+                }
+            } else if (reqBody.map.length < 10) {
+                if (!maps.includes(reqBody.map)) {
+                    return new Response("Invalid Map(s)", {status: 406, headers: headersOBJ});
+                }
             }
 
             let obj =  {
                 record: reqBody.record,
+                map: reqBody.map,
                 team1: reqBody.team1,
                 team2: reqBody.team2,
                 score: reqBody.score
