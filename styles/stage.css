@@ -58,7 +58,7 @@ h2 {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    margin-top: 50px;
+    margin-top: 10px;
 }
 
 #matches-status {

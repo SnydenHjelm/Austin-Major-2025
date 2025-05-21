@@ -38,6 +38,47 @@ header {
     border-radius: 10px;
 }
 
+.headers {
+    display: grid;
+}
+
+.knowledge {
+    border: 5px solid var(--secondary-color);
+    border-radius: 10px;
+    margin: 10px auto;
+    max-width: 750px;
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    align-items: center;
+}
+
+.left {
+    height: 100%;
+    display: grid;
+    grid-template-rows: 1fr, 2fr;
+    align-items: center;
+}
+
+.left .headers h2 {
+    font-size: 36px;
+    justify-self: center;
+}
+
+.left .headers h3 {
+    font-size: 26px;
+    justify-self: center;
+    margin: 0;
+}
+
+.left .headers h2, .left ul {
+    margin: 5px;
+}
+
+.left ul li {
+    align-self: stretch;
+    font-size: 22px;
+}
+
 nav {
     max-width: 750px;
     margin: auto;
@@ -60,4 +101,16 @@ nav a {
 
 nav a:hover {
     background-color: var(--nav-hover);
+}
+
+.right {
+    display: flex;
+    align-items: center;
+}
+
+.right img {
+    object-fit: cover;
+    height: 100%;
+    width: 100%;
+    border-radius: 5px;
 }
