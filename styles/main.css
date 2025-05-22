@@ -16,10 +16,56 @@
 body {
     background-color: var(--main-color);
     font-family: main;
+    margin: 0;
 }
 
 #current {
     background-color: var(--nav-hover);
+}
+
+footer {
+    background-color: var(--secondary-color);
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    color: var(--main-color);
+}
+
+footer #footer-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: 40px;
+}
+
+footer #footer-left {
+    display: flex;
+}
+
+footer #footer-right {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    border-left: 2px solid var(--main-color);
+    gap: 10px;
+}
+
+footer #footer-right a {
+    flex-grow: 1;
+    flex-basis: 0;
+    color: var(--main-color);
+    text-decoration: none;
+    font-size: 25px;
+    text-align: center;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+footer #footer-right a:hover {
+    background-color: var(--nav-hover);
+}
+
+footer div img {
+    height: 100px;
 }
 
 h1 {
