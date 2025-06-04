@@ -93,11 +93,14 @@ async function displayGames(games, record) {
         parent.appendChild(div);
     }
     await hideGames();
+    removeUnderlines();
     if (record) {
         let getRound = whichRound(record.value);
         document.querySelector(`#${getRound}`).style.display = "block";
+        document.querySelector(`#${getRound}-nav`).style.textDecoration = "underline";
     } else {
         document.querySelector("#round1").style.display = "block";
+        document.querySelector("#round1-nav").style.textDecoration = "underline";
     }
 }
 
