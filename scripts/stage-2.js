@@ -128,9 +128,9 @@ async function displayStage2() {
 }
 
 async function driver() {
-    await displayStage1();
+    await displayStage2();
     await displayGames(await getDb());
-    document.querySelector("#stage1-controls button").addEventListener("click", addStage1Team);
+    document.querySelector("#stage2-controls button").addEventListener("click", addStage2Team);
     document.querySelector("#matches-b").addEventListener("click", addGame);
     let rounds = document.querySelectorAll(".rounds p");
     for (let p of rounds) {
@@ -320,7 +320,7 @@ function removeUnderlines() {
 }
 
 async function getDb() {
-    let req = new Request("http://localhost:8000/stage1/games");
+    let req = new Request("http://localhost:8000/stage2/games");
     let resp = await fetch(req);
     let reso = await resp.json();
     return reso;

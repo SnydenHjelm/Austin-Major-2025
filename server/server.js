@@ -148,9 +148,9 @@ async function handler(req) {
 
             let maps = ["Ancient", "Anubis", "Train", "Inferno", "Dust 2", "Mirage", "Nuke"];
             let records = ["0-0", "0-1", "1-0", "1-1", "1-2", "2-1", "2-2", "2-0", "0-2"];
-            let stage1Teams = JSON.parse(Deno.readTextFileSync("../db/stage-1.json"));
-            let team1 = stage1Teams.find((x) => x.team.toLowerCase() === reqBody.team1.toLowerCase());
-            let team2 = stage1Teams.find((x) => x.team.toLowerCase() === reqBody.team2.toLowerCase());
+            let stage2Teams = JSON.parse(Deno.readTextFileSync("../db/stage-2.json"));
+            let team1 = stage2Teams.find((x) => x.team.toLowerCase() === reqBody.team1.toLowerCase());
+            let team2 = stage2Teams.find((x) => x.team.toLowerCase() === reqBody.team2.toLowerCase());
             if (!team1 || !team2) {
                 return new Response("Invalid Team(s)", {status: 406, headers: headersOBJ});
             }
