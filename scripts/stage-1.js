@@ -17,7 +17,7 @@ async function addGame() {
     if (resp.ok) {
         let reso = await resp.json();
         console.log(reso);
-        await displayGames(reso);
+        await displayGames(reso, record);
         record.value = "";
         map.value = "";
         team1.value = "";
@@ -75,16 +75,12 @@ async function addStage1Team() {
     }
 }
 
-
-async function flagFromCountry(country) {
-    let allFlags = flags();
-    let theFlag = allFlags.find((x) => x.country.toLowerCase() === country.toLowerCase());
-    return theFlag.flag;
-}
-
-async function displayGames(games) {
-    document.querySelector(".games").innerHTML = "";
+async function displayGames(games, record) {
+    await emptyGameDivs();
     for (let game of games) {
+        let round = whichRound(game.record);
+        let parent = document.querySelector(`#${round}`);
+
         let div = document.createElement("div");
         div.classList.add("game");
         div.innerHTML = `
@@ -94,7 +90,14 @@ async function displayGames(games) {
         <p class="bigger">${game.score}</p>
         <img title="${game.team2}" src="../images/${game.team2}.png">
         `
-        document.querySelector(".games").appendChild(div);
+        parent.appendChild(div);
+    }
+    await hideGames();
+    if (record) {
+        let getRound = whichRound(record.value);
+        document.querySelector(`#${getRound}`).style.display = "block";
+    } else {
+        document.querySelector("#round1").style.display = "block";
     }
 }
 
@@ -126,6 +129,31 @@ async function driver() {
     await displayGames(await getDb());
     document.querySelector("#stage1-controls button").addEventListener("click", addStage1Team);
     document.querySelector("#matches-b").addEventListener("click", addGame);
+    let rounds = document.querySelectorAll(".rounds p");
+    for (let p of rounds) {
+        p.addEventListener("click", () => {
+            hideGames();
+            let lastChar = p.textContent[p.textContent.length - 1];
+            document.querySelector(`#round${lastChar}`).style.display = "block";
+            removeUnderlines();
+            p.style.textDecoration = "underline";
+        });
+    }
+}
+
+async function emptyGameDivs() {
+    document.querySelector("#round1").innerHTML = "";
+    document.querySelector("#round2").innerHTML = "";
+    document.querySelector("#round3").innerHTML = "";
+    document.querySelector("#round4").innerHTML = "";
+    document.querySelector("#round5").innerHTML = "";
+}
+
+
+async function flagFromCountry(country) {
+    let allFlags = flags();
+    let theFlag = allFlags.find((x) => x.country.toLowerCase() === country.toLowerCase());
+    return theFlag.flag;
 }
 
 function flags() {
@@ -276,8 +304,37 @@ async function getDb() {
     return reso;
 }
 
+async function hideGames() {
+    document.querySelector("#round1").style.display = "none";
+    document.querySelector("#round2").style.display = "none";
+    document.querySelector("#round3").style.display = "none";
+    document.querySelector("#round4").style.display = "none";
+    document.querySelector("#round5").style.display = "none";
+}
+
 function optionsGen(method, body) {
     return {method: method, body: JSON.stringify(body), headers: {"content-type": "application/json"}};
+}
+
+function removeUnderlines() {
+    let ps = document.querySelectorAll(".rounds p");
+    for (let p of ps) {
+        p.style.textDecoration = "none";
+    }
+}
+
+function whichRound(record) {
+    if (record === "0-0") {
+        return "round1";
+    } else if (record === "1-0" || record === "0-1") {
+        return "round2";
+    } else if (record === "2-0" || record === "0-2" || record === "1-1") {
+        return "round3";
+    } else if (record === "2-1" || record === "1-2") {
+        return "round4";
+    } else if (record === "2-2") {
+        return "round5";
+    }
 }
 
 driver();

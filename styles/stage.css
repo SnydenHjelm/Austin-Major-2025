@@ -65,6 +65,24 @@ h2 {
     text-align: center;
 }
 
+.rounds {
+    display: flex;
+    max-width: 800px;
+    margin: auto;
+}
+
+.rounds p {
+    flex-grow: 1;
+    flex-basis: 0;
+    text-align: center;
+    font-size: 20px;
+}
+
+.rounds p:hover {
+    cursor: pointer;
+    text-decoration: underline;
+}
+
 #status {
     text-align: center;
     font-size: 20px;
