@@ -12,7 +12,7 @@ async function addGame() {
         team2: team2.value,
         score: score.value
     }
-    let req = new Request("http://localhost:8000/stage1/games", optionsGen("POST", obj));
+    let req = new Request("http://localhost:8000/stage2/games", optionsGen("POST", obj));
     let resp = await fetch(req);
     if (resp.ok) {
         let reso = await resp.json();
