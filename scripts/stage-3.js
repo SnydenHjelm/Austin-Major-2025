@@ -31,7 +31,7 @@ async function addGame() {
     }
 }
 
-async function addStage3Team() {
+async function addPlayoffTeam() {
     let team = document.querySelector("#stage3-controls #team").value;
     let player1 = document.querySelector("#stage3-controls #player1").value;
     let player2 = document.querySelector("#stage3-controls #player2").value;
@@ -59,7 +59,7 @@ async function addStage3Team() {
             document.querySelector("#stage3-controls #player3").value = "";
             document.querySelector("#stage3-controls #player4").value = "";
             document.querySelector("#stage3-controls #player5").value = "";
-            await displayStage3();
+            await displayPlayoffs();
         } else {
             let reso = await resp.text();
             if (resp.status === 409) {
@@ -104,7 +104,7 @@ async function displayGames(games, record) {
     }
 }
 
-async function displayStage3() {
+async function displayPlayoffs() {
     let req = new Request("http://localhost:8000/stage3");
     let resp = await fetch(req);
     let div = document.querySelector("#stage3-qualied-teams");
@@ -128,9 +128,9 @@ async function displayStage3() {
 }
 
 async function driver() {
-    await displayStage3();
+    await displayPlayoffs();
     await displayGames(await getDb());
-    document.querySelector("#stage3-controls button").addEventListener("click", addStage3Team);
+    document.querySelector("#stage3-controls button").addEventListener("click", addPlayoffTeam);
     document.querySelector("#matches-b").addEventListener("click", addGame);
     let rounds = document.querySelectorAll(".rounds p");
     for (let p of rounds) {

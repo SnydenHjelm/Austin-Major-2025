@@ -1,4 +1,36 @@
-async function addStage3Team() {
+async function addGame() {
+    let type = document.querySelector("#match-type");
+    let map = document.querySelector("#map");
+    let team1 = document.querySelector("#team1");
+    let team2 = document.querySelector("#team2");
+    let score = document.querySelector("#score");
+
+    let obj = {
+        type: type.value,
+        map: map.value,
+        team1: team1.value,
+        team2: team2.value,
+        score: score.value
+    }
+    let req = new Request("http://localhost:8000/playoffs/games", optionsGen("POST", obj));
+    let resp = await fetch(req);
+    if (resp.ok) {
+        let reso = await resp.json();
+        console.log(reso);
+        await displayGames(reso, type.value.toLowerCase());
+        map.value = "";
+        team1.value = "";
+        team2.value = "";
+        score.value = "";
+        return;
+    } else {
+        let reso = await resp.text();
+        document.querySelector("#matches-status").textContent = `${resp.status}: ` + reso;
+        return;
+    }
+}
+
+async function addPlayoffTeam() {
     let team = document.querySelector("#stage3-controls #team").value;
     let player1 = document.querySelector("#stage3-controls #player1").value;
     let player2 = document.querySelector("#stage3-controls #player2").value;
@@ -26,7 +58,7 @@ async function addStage3Team() {
             document.querySelector("#stage3-controls #player3").value = "";
             document.querySelector("#stage3-controls #player4").value = "";
             document.querySelector("#stage3-controls #player5").value = "";
-            await displayStage3();
+            await displayPlayoffs();
         } else {
             let reso = await resp.text();
             if (resp.status === 409) {
@@ -42,13 +74,47 @@ async function addStage3Team() {
     }
 }
 
-async function flagFromCountry(country) {
-    let allFlags = flags();
-    let theFlag = allFlags.find((x) => x.country.toLowerCase() === country.toLowerCase());
-    return theFlag.flag;
-}   
+async function displayGames(games, type) {
+    emptyDivs();
+    for (let game of games) {
+        let parent = document.querySelector(`#${game.type.toLowerCase()}`);
 
-async function displayStage3() {
+        if (game.type === "Grand-Final") {
+            let div = document.createElement("div");
+            div.classList.add("game");
+            div.innerHTML = `
+            <p class="bigger">Grand Final</p>
+            <p>${game.map}</p>
+            <img title="${game.team1}" src="../images/${game.team1}.png">
+            <p class="bigger">${game.score}</p>
+            <img title="${game.team2}" src="../images/${game.team2}.png">
+            `
+        parent.appendChild(div);
+        } else {
+            let div = document.createElement("div");
+            div.classList.add("game");
+            div.innerHTML = `
+            <p class="bigger">${game.type}</p>
+            <p>${game.map}</p>
+            <img title="${game.team1}" src="../images/${game.team1}.png">
+            <p class="bigger">${game.score}</p>
+            <img title="${game.team2}" src="../images/${game.team2}.png">
+            `
+            parent.appendChild(div);
+        }
+    }
+    hideGames();
+    removeUnderlines();
+    if (type) {
+        document.querySelector(`#${type}`).style.display = "block";
+        document.querySelector(`#${type}-nav`).style.textDecoration = "underline";
+    } else {
+        document.querySelector("#quarterfinal").style.display = "block";
+        document.querySelector("#quarterfinal-nav").style.textDecoration = "underline";
+    }
+}
+
+async function displayPlayoffs() {
     let req = new Request("http://localhost:8000/playoffs");
     let resp = await fetch(req);
     let div = document.querySelector("#stage3-qualied-teams");
@@ -72,9 +138,39 @@ async function displayStage3() {
 }
 
 async function driver() {
-    await displayStage3();
-    document.querySelector("#stage3-controls button").addEventListener("click", addStage3Team);
+    await displayPlayoffs();
+    await displayGames(await getDb());
+    document.querySelector("#stage3-controls button").addEventListener("click", addPlayoffTeam);
+    document.querySelector("#matches-b").addEventListener("click", addGame);
+    let rounds = document.querySelectorAll(".rounds p");
+    for (let p of rounds) {
+        p.addEventListener("click", () => {
+            hideGames();
+            let pText = p.textContent.toLowerCase();
+            if (pText === "grand final") {
+                document.querySelector("#grand-final").style.display = "block";
+            } else if (pText === "semifinals") {
+                document.querySelector(`#semifinal`).style.display = "block";
+            } else if (pText === "quarterfinals") {
+                document.querySelector("#quarterfinal").style.display = "block";
+            }
+            removeUnderlines();
+            p.style.textDecoration = "underline";
+        });
+    }
 }
+
+function emptyDivs() {
+    document.querySelector("#quarterfinal").innerHTML = "";
+    document.querySelector("#semifinal").innerHTML = "";
+    document.querySelector("#grand-final").innerHTML = "";
+}
+
+async function flagFromCountry(country) {
+    let allFlags = flags();
+    let theFlag = allFlags.find((x) => x.country.toLowerCase() === country.toLowerCase());
+    return theFlag.flag;
+}  
 
 function flags() {
     return [
@@ -218,8 +314,28 @@ function flags() {
       ];      
 }
 
+async function getDb() {
+    let req = new Request("http://localhost:8000/playoffs/games");
+    let resp = await fetch(req);
+    let reso = await resp.json();
+    return reso;
+}
+
+function hideGames() {
+    document.querySelector("#quarterfinal").style.display = "none";
+    document.querySelector("#semifinal").style.display = "none";
+    document.querySelector("#grand-final").style.display = "none";
+}
+
 function optionsGen(method, body) {
     return {method: method, body: JSON.stringify(body), headers: {"content-type": "application/json"}};
+}
+
+function removeUnderlines() {
+    let ps = document.querySelectorAll(".rounds p");
+    for (let p of ps) {
+        p.style.textDecoration = "none";
+    }
 }
 
 driver();
