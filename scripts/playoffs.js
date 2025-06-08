@@ -1,36 +1,3 @@
-async function addGame() {
-    let record = document.querySelector("#team-record");
-    let map = document.querySelector("#map");
-    let team1 = document.querySelector("#team1");
-    let team2 = document.querySelector("#team2");
-    let score = document.querySelector("#score");
-
-    let obj = {
-        record: record.value,
-        map: map.value,
-        team1: team1.value,
-        team2: team2.value,
-        score: score.value
-    }
-    let req = new Request("http://localhost:8000/stage3/games", optionsGen("POST", obj));
-    let resp = await fetch(req);
-    if (resp.ok) {
-        let reso = await resp.json();
-        console.log(reso);
-        await displayGames(reso, record);
-        record.value = "";
-        map.value = "";
-        team1.value = "";
-        team2.value = "";
-        score.value = "";
-        return;
-    } else {
-        let reso = await resp.text();
-        document.querySelector("#matches-status").textContent = `${resp.status}: ` + reso;
-        return;
-    }
-}
-
 async function addStage3Team() {
     let team = document.querySelector("#stage3-controls #team").value;
     let player1 = document.querySelector("#stage3-controls #player1").value;
@@ -48,7 +15,7 @@ async function addStage3Team() {
         player5: player5.split(", ")
     }
 
-    let req = new Request("http://localhost:8000/stage3", optionsGen("POST", obj));
+    let req = new Request("http://localhost:8000/playoffs", optionsGen("POST", obj));
     try {
         let resp = await fetch(req);
         if (resp.status === 200) {
@@ -70,42 +37,19 @@ async function addStage3Team() {
             return;
         }
     } catch (e) {
-        document.querySelector("#stage3-controls #status").textContent = "Network error";
+        document.querySelector("#stage2-controls #status").textContent = "Network error";
         return;
     }
 }
 
-async function displayGames(games, record) {
-    await emptyGameDivs();
-    for (let game of games) {
-        let round = whichRound(game.record);
-        let parent = document.querySelector(`#${round}`);
-
-        let div = document.createElement("div");
-        div.classList.add("game");
-        div.innerHTML = `
-        <p class="bigger">${game.record}</p>
-        <p>${game.map}</p>
-        <img title="${game.team1}" src="../images/${game.team1}.png">
-        <p class="bigger">${game.score}</p>
-        <img title="${game.team2}" src="../images/${game.team2}.png">
-        `
-        parent.appendChild(div);
-    }
-    await hideGames();
-    removeUnderlines();
-    if (record) {
-        let getRound = whichRound(record.value);
-        document.querySelector(`#${getRound}`).style.display = "block";
-        document.querySelector(`#${getRound}-nav`).style.textDecoration = "underline";
-    } else {
-        document.querySelector("#round1").style.display = "block";
-        document.querySelector("#round1-nav").style.textDecoration = "underline";
-    }
-}
+async function flagFromCountry(country) {
+    let allFlags = flags();
+    let theFlag = allFlags.find((x) => x.country.toLowerCase() === country.toLowerCase());
+    return theFlag.flag;
+}   
 
 async function displayStage3() {
-    let req = new Request("http://localhost:8000/stage3");
+    let req = new Request("http://localhost:8000/playoffs");
     let resp = await fetch(req);
     let div = document.querySelector("#stage3-qualied-teams");
     div.innerHTML = "";
@@ -129,34 +73,8 @@ async function displayStage3() {
 
 async function driver() {
     await displayStage3();
-    await displayGames(await getDb());
     document.querySelector("#stage3-controls button").addEventListener("click", addStage3Team);
-    document.querySelector("#matches-b").addEventListener("click", addGame);
-    let rounds = document.querySelectorAll(".rounds p");
-    for (let p of rounds) {
-        p.addEventListener("click", () => {
-            hideGames();
-            let lastChar = p.textContent[p.textContent.length - 1];
-            document.querySelector(`#round${lastChar}`).style.display = "block";
-            removeUnderlines();
-            p.style.textDecoration = "underline";
-        });
-    }
 }
-
-async function emptyGameDivs() {
-    document.querySelector("#round1").innerHTML = "";
-    document.querySelector("#round2").innerHTML = "";
-    document.querySelector("#round3").innerHTML = "";
-    document.querySelector("#round4").innerHTML = "";
-    document.querySelector("#round5").innerHTML = "";
-}
-
-async function flagFromCountry(country) {
-    let allFlags = flags();
-    let theFlag = allFlags.find((x) => x.country.toLowerCase() === country.toLowerCase());
-    return theFlag.flag;
-}  
 
 function flags() {
     return [
@@ -302,42 +220,6 @@ function flags() {
 
 function optionsGen(method, body) {
     return {method: method, body: JSON.stringify(body), headers: {"content-type": "application/json"}};
-}
-
-async function hideGames() {
-    document.querySelector("#round1").style.display = "none";
-    document.querySelector("#round2").style.display = "none";
-    document.querySelector("#round3").style.display = "none";
-    document.querySelector("#round4").style.display = "none";
-    document.querySelector("#round5").style.display = "none";
-}
-
-function removeUnderlines() {
-    let ps = document.querySelectorAll(".rounds p");
-    for (let p of ps) {
-        p.style.textDecoration = "none";
-    }
-}
-
-async function getDb() {
-    let req = new Request("http://localhost:8000/stage3/games");
-    let resp = await fetch(req);
-    let reso = await resp.json();
-    return reso;
-}
-
-function whichRound(record) {
-    if (record === "0-0") {
-        return "round1";
-    } else if (record === "1-0" || record === "0-1") {
-        return "round2";
-    } else if (record === "2-0" || record === "0-2" || record === "1-1") {
-        return "round3";
-    } else if (record === "2-1" || record === "1-2") {
-        return "round4";
-    } else if (record === "2-2") {
-        return "round5";
-    }
 }
 
 driver();

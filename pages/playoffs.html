@@ -3,21 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stage 3 | Austin Major 2025</title>
+    <title>Playoffs | Austin Major 2025</title>
     <link rel="icon" href="../images/icon.png">
     <link rel="stylesheet" href="../styles/main.css">
     <link rel="stylesheet" href="../styles/stage.css">
+    <link rel="stylesheet" href="../styles/playoffs.css">
 </head>
 <body>
     <header>
         <a href="index.html"><img src="../images/blast.tv-icon.svg"></a>
     </header>
-    <h1>Stage 3</h1>
+    <h1>Playoffs</h1>
     <nav>
         <a href="stage-1.html">Stage 1</a>
         <a href="stage-2.html">Stage 2</a>
-        <a id="current" href="stage-3.html">Stage 3</a>
-        <a href="playoffs.html">Playoffs</a>
+        <a href="stage-3.html">Stage 3</a>
+        <a id="current" href="playoffs.html">Playoffs</a>
     </nav>
     <h2>Qualified teams:</h2>
     <div class="qualied-teams" id="stage3-qualied-teams">
@@ -32,35 +33,34 @@
         <button>Submit</button>
         <p id="status">...</p>
     </div>
-    <h2 style="margin: 20px 0px;">Stage 3 Matches</h2>
+    <h2 style="margin: 20px 0px;">Playoff matches</h2>
     <div id="stage1-rounds" class="rounds">
-        <p style="text-decoration: underline;" id="round1-nav">Round 1</p>
-        <p id="round2-nav">Round 2</p>
-        <p id="round3-nav">Round 3</p>
-        <p id="round4-nav">Round 4</p>
-        <p id="round5-nav">Round 5</p>
+        <p style="text-decoration: underline;" id="round1-nav">Quarterfinals</p>
+        <p id="round2-nav">Semifinals</p>
+        <p id="round3-nav">Grand Final</p>
     </div>
     <div class="matches" id="stage1-matches">
         <div id="game-info" class="game">
-            <p>Record</p>
+            <p>Type</p>
             <p>Map(s)</p>
             <p>Team 1</p>
             <p>Score</p>
             <p>Team 2</p>
         </div>
-        <div id="round1" class="games">
+        <div id="quarterfinal" class="games">
         </div>
-        <div id="round2" class="games">
+        <div id="semifinal" class="games">
         </div>
-        <div id="round3" class="games">
+        <div id="grand-final" class="games">
         </div>
-        <div id="round4" class="games">
-        </div>
-        <div id="round5" class="games">
         </div>
     </div>
     <div class="controls">
-        <input id="team-record" type="text" placeholder="Team record (before match)...">
+        <select id="match-type">
+            <option>Quarterfinal</option>
+            <option>Semifinal</option>
+            <option>Grand-Final</option>
+        </select>
         <input id="map" placeholder="Map...">
         <input id="team1" type="text" placeholder="Team 1...">
         <input id="team2" type="text" placeholder="Team 2...">
@@ -82,6 +82,6 @@
             <div class="footer-link"><a href="playoffs.html">Playoffs</a></div>
         </div>
     </footer>
-    <script src="../scripts/stage-3.js"></script>
+    <script src="../scripts/playoffs.js"></script>
 </body>
 </html>
